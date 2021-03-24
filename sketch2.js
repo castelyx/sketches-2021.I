@@ -108,37 +108,16 @@ class CircleCluster
 
                     if (circle.direction == 0)
                     {
-                        if (circle.radius < minRadius)
-                        {
-                            circle.direction == 1;
-                            circle.radius = minRadius;
-                        }
-                        else
-                        {
-                            circle.radius = map(sin(frameCount * sizeSpeed),1.0,-1.0,minRadius,maxRadius);
-                        }
+                        circle.radius = map(sin(frameCount * sizeSpeed),1.0,-1.0,minRadius,maxRadius);
                     }
                     else if (circle.direction == 1)
                     {
-                        if (circle.radius > maxRadius)
-                        {
-                            circle.direction == 0;
-                            circle.radius = maxRadius;
-                        }
-                        else
-                        {
-                            circle.radius = map(sin(frameCount * sizeSpeed),-1.0,1.0,minRadius,maxRadius);
-                        }
+                        circle.radius = map(sin(frameCount * sizeSpeed),-1.0,1.0,minRadius,maxRadius);
                     }
-					
 					fill(color(circle.col));
 					ellipse(i*maxRadius, j*maxRadius, circle.radius);	
-                    
-                    
-					
 				}
 			}
-
 		pop();
 	}
 }
