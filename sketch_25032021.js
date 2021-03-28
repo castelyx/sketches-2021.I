@@ -4,6 +4,9 @@ let buildingStartingPoint;
 let measureUnit;
 let canvasSize;
 let building;
+let wndw = [];
+const windowNumber = 3;
+let wndwHeight;
 
 function setup()
 {
@@ -12,30 +15,14 @@ function setup()
     centerCanvas();
     
     measureUnit = width / 250;
-    //buildingHeight = height/3;
-    //buildingBase = width/12;
-    //buildingStartingPoint = [-8*measureUnit, measureUnit*55];  //left side, bottom right
-   /*  pointB = [buildingStartingPoint[0] - buildingBase, buildingStartingPoint[1] - 3.5*measureUnit]; //left side, bottom left
-    pointC = [buildingStartingPoint[0] - buildingBase, buildingStartingPoint[1] - 3.5*measureUnit - buildingHeight]; //left side, top left
-    pointD = [buildingStartingPoint[0], buildingStartingPoint[1] - buildingHeight];   //left side, top right
-    pointE = [buildingStartingPoint[0] + buildingBase - 6*measureUnit, buildingStartingPoint[1] - 8*measureUnit]; //right side, bottom right
-    pointF = [buildingStartingPoint[0] + buildingBase - 6*measureUnit, buildingStartingPoint[1] - 8*measureUnit - buildingHeight]; //right side, top right
-    pointG = [buildingStartingPoint[0], buildingStartingPoint[1] - buildingHeight * 1.5]; //roof top
-    
-    // compute some middle points
+    wndwHeight = 7*measureUnit;
 
-    pointH = [buildingStartingPoint[0] - measureUnit*7, 0]; 
-    baseData = computeLineData(pointB, buildingStartingPoint);
-    pointH[1] = findPointOnLine(baseData[0], baseData[1], pointH[0], 'y');    //door bottom right
-    
-    pointI = [pointH[0] - measureUnit * 8, 0];
-    pointI[1] = findPointOnLine(baseData[0], baseData[1], pointI[0], 'y');      //door bottom left
-
-    pointJ = [pointH[0], pointH[1] - measureUnit * 10]; //door top right
-    pointK = [pointI[0], pointI[1] - measureUnit * 10];  //door top left
-    pointL1 = [(pointH[0] + pointI[0])/1.8, pointH[1] - measureUnit * 15]; //door top left
-    pointL2 = [(pointH[0] + pointI[0])/2.2, pointH[1] - measureUnit * 15]; //door top right */
     building = new Building(width/12, height/3, -8, 55);
+    for (let i = 0; i < windowNumber; i++)
+    {
+        wndw[i] = new Window(70 + i*60, "right", building);
+    }
+  
 } 
 
 
@@ -45,8 +32,15 @@ function draw()
     
     stroke('black');
     strokeWeight(2);
-
+    
     building.render();
+
+    for (let i = 0; i < windowNumber; i++)
+    {
+        wndw[i].render();
+    }
+   
+   
 }
 
 class Building
@@ -74,17 +68,7 @@ class Building
         this.pointJ = [this.pointH[0], this.pointH[1] - measureUnit * 10]; //door top right
         this.pointK = [this.pointI[0], this.pointI[1] - measureUnit * 10];  //door top left
         this.pointL1 = [(this.pointH[0] + this.pointI[0])/1.8, this.pointH[1] - measureUnit * 15]; //door top left
-        this.pointL2 = [(this.pointH[0] + this.pointI[0])/2.2, this.pointH[1] - measureUnit * 15]; //door top right
-        console.log("pointA = " + this.buildingStartingPoint)
-        console.log("pointB = " + this.pointB)    
-        console.log("pointC = " + this.pointC) 
-        console.log("pointD = " + this.pointD) 
-        console.log("pointE = " + this.pointE) 
-        console.log("pointF = " + this.pointF)     
-        console.log("pointG = " + this.pointG) 
-        console.log("pointH = " + this.pointH) 
-        console.log("pointI = " + this.pointI) 
-        console.log("pointJ = " + this.pointJ)    
+        this.pointL2 = [(this.pointH[0] + this.pointI[0])/2.2, this.pointH[1] - measureUnit * 15]; //door top right  
     }
 
     render()
@@ -146,9 +130,64 @@ class Building
     }
 }
 
+class Window
+{
+    constructor(_height, _side, _building)
+    {
+        this.point00 = (_side == "left") ? [_building.buildingStartingPoint[0] - 9*measureUnit, 0] : [_building.buildingStartingPoint[0] + 6*measureUnit, 0];
+        this.point01 = (_side == "left") ? [_building.buildingStartingPoint[0] - 13*measureUnit, 0] : [_building.buildingStartingPoint[0] + 10*measureUnit, 0];
 
+        if (_side == "left")
+        {
+            let baseData = computeLineData(_building.pointB, _building.buildingStartingPoint);
+            this.point00[1] = findPointOnLine(baseData[0], baseData[1], this.point00[0], 'y');
+            this.point01[1] = findPointOnLine(baseData[0], baseData[1], this.point01[0], 'y');
+            this.pointA = [this.point00[0], this.point00[1] - _height];
+            this.pointB = [this.point01[0], this.point01[1] - _height];
+            this.pointC = [(this.point00[0] + this.point01[0])/2.17, this.point00[1] - _height - wndwHeight];
+            this.pointD = [(this.point00[0] + this.point01[0])/1.83, this.point00[1] - _height - wndwHeight];
+        }
+        else if (_side == "right")
+        {
+            let baseData = computeLineData(_building.pointE, _building.buildingStartingPoint);
+            this.point00[1] = findPointOnLine(baseData[0], baseData[1], this.point00[0], 'y');
+            this.point01[1] = findPointOnLine(baseData[0], baseData[1], this.point01[0], 'y');
+            this.pointA = [this.point00[0], this.point00[1] - _height];
+            this.pointB = [this.point01[0], this.point01[1] - _height];
+            this.pointC = [(this.point00[0] + this.point01[0])/2.17, this.point00[1] - _height - wndwHeight];
+            this.pointD = [(this.point00[0] + this.point01[0])/1.83, this.point00[1] - _height - wndwHeight];
+        }
+    }
 
+    render()
+    {
+        
+        
+        
+        noStroke()
+        fill(color('#52e3de'));
+        
+        push();
+            translate(width/2, height/2);
+            beginShape();
+                curveVertex(this.pointA[0], this.pointA[1]);
+                curveVertex(this.pointA[0], this.pointA[1]);
+                curveVertex(this.pointC[0], this.pointC[1]);
+                curveVertex(this.pointD[0], this.pointD[1]);
+                curveVertex(this.pointB[0], this.pointB[1]);
+                curveVertex(this.pointB[0], this.pointB[1]);
+            endShape();
 
+            strokeWeight(4);
+            stroke('red');
+    
+            point(this.point00[0], this.point00[1]);
+            point(this.point01[0], this.point01[1]);
+
+        pop();
+    }
+
+}
 
 function centerCanvas() 
 {
