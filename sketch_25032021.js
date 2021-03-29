@@ -20,7 +20,12 @@ function setup()
     building = new Building(width/12, height/3, -8, 55);
     for (let i = 0; i < windowNumber; i++)
     {
-        wndw[i] = new Window(70 + i*60, "right", building);
+        wndw[i] = new Window(building.height/3 + i*60, "left", building);
+    }
+    for (let i = windowNumber; i < 2*windowNumber; i++)
+    {
+        let j = i - windowNumber;
+        wndw[i] = new Window(building.height/3  + j*60, "right", building);
     }
   
 } 
@@ -35,7 +40,7 @@ function draw()
     
     building.render();
 
-    for (let i = 0; i < windowNumber; i++)
+    for (let i = 0; i < 2*windowNumber; i++)
     {
         wndw[i].render();
     }
@@ -134,11 +139,10 @@ class Window
 {
     constructor(_height, _side, _building)
     {
-        this.point00 = (_side == "left") ? [_building.buildingStartingPoint[0] - 9*measureUnit, 0] : [_building.buildingStartingPoint[0] + 6*measureUnit, 0];
-        this.point01 = (_side == "left") ? [_building.buildingStartingPoint[0] - 13*measureUnit, 0] : [_building.buildingStartingPoint[0] + 10*measureUnit, 0];
-
         if (_side == "left")
         {
+            this.point00 = [_building.buildingStartingPoint[0] - 9*measureUnit, 0];
+            this.point01 = [_building.buildingStartingPoint[0] - 13*measureUnit, 0];
             let baseData = computeLineData(_building.pointB, _building.buildingStartingPoint);
             this.point00[1] = findPointOnLine(baseData[0], baseData[1], this.point00[0], 'y');
             this.point01[1] = findPointOnLine(baseData[0], baseData[1], this.point01[0], 'y');
@@ -149,16 +153,19 @@ class Window
         }
         else if (_side == "right")
         {
+            this.point00 = [_building.buildingStartingPoint[0] + 6.5*measureUnit, 0];
+            this.point01 = [_building.buildingStartingPoint[0] + 10*measureUnit, 0];
+          
             let baseData = computeLineData(_building.pointE, _building.buildingStartingPoint);
             this.point00[1] = findPointOnLine(baseData[0], baseData[1], this.point00[0], 'y');
             this.point01[1] = findPointOnLine(baseData[0], baseData[1], this.point01[0], 'y');
-            this.pointA = [this.point00[0], this.point00[1] - _height];
-            this.pointB = [this.point01[0], this.point01[1] - _height];
-            this.pointC = [(this.point00[0] + this.point01[0])/2.17, this.point00[1] - _height - wndwHeight];
-            this.pointD = [(this.point00[0] + this.point01[0])/1.83, this.point00[1] - _height - wndwHeight];
+            this.pointA = [this.point00[0], this.point00[1] - _height + 1.5*measureUnit];
+            this.pointB = [this.point01[0], this.point01[1] - _height + 1.5*measureUnit];
+            this.pointC = [this.pointA[0] + measureUnit/3, this.point00[1] - _height - wndwHeight + 1.5*measureUnit] ;
+            this.pointD = [this.pointB[0] - measureUnit/3, this.point01[1] - _height - wndwHeight + 1.5*measureUnit];
         }
     }
-
+    
     render()
     {
         
@@ -180,9 +187,6 @@ class Window
 
             strokeWeight(4);
             stroke('red');
-    
-            point(this.point00[0], this.point00[1]);
-            point(this.point01[0], this.point01[1]);
 
         pop();
     }
