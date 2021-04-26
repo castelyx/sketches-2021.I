@@ -117,3 +117,11 @@ class Flower
 		stroke(palette[1]);
 	}
 }
+
+function keyTyped() 
+{
+	if (key === 's') 
+	{
+		saveCanvas('sketch250421', 'png');
+	} 
+}
